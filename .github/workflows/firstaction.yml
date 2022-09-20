@@ -9,10 +9,10 @@ on:
   push:
     branches: [ "master" ]
   pull_request:
-    branches: [ "master" ]
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+    types : [closed]
+    
+env:
+  name: Gift
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -20,6 +20,8 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    env:
+       name: Gift G
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -28,10 +30,23 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
-        run: echo Hello, world!
+        run: echo Hello $name!
 
       # Runs a set of commands using the runners shell
       - name: Run a multi-line script
         run: |
           echo Add other actions to build,
           echo test, and deploy your project.
+          
+  pull_requests_only:
+
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    needs: build # run after build is complete
+    
+    steps:
+      - name: Run a multi-line script
+        run: |
+          echo Add other actions to build,
+          echo test, $name.
+          
